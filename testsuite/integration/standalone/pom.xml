@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>FMService-testsuite-integration</artifactId>
+		<groupId>com.ericsson.nms.services</groupId>
+		<version>1.10.53-SNAPSHOT</version>
+	</parent>
+	<artifactId>FMService-testsuite-integration-standalone</artifactId>
+	<name>[${project.parent.artifactId}] TestSuite Integration Standalone</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>FMService-api</artifactId>
+			<version>1.10.53-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>FMService-jar</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>FMService-impl</artifactId>
+			<version>1.10.53-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>FMService-jee</artifactId>
+			<version>1.10.53-SNAPSHOT</version>
+		</dependency>
+				<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.0</version>
+			
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.container</groupId>
+			<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+			<scope>test</scope>
+			<version>${version.arquillian-weld-se-embedded}</version>
+			
+			
+		</dependency>
+				<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-core</artifactId>
+			<version>5.7.0</version>
+		</dependency>
+				<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			
+		</dependency>
+
+		
+	</dependencies>
+	<profiles>
+		<!-- 
+			skip tests
+		 -->
+		<profile>
+			<id>skip_standalone</id>
+			<activation>
+				<property><name>ts.skip.integration.standalone</name></property>
+			</activation>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+		</profile>
+	</profiles>
+	
+</project>

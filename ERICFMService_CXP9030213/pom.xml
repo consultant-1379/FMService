@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>FMService</artifactId>
+		<groupId>com.ericsson.nms.services</groupId>
+		<version>1.10.53-SNAPSHOT</version>
+	</parent>
+	<artifactId>ERICFMService_CXP9030213</artifactId>
+	<name>[${project.parent.artifactId}] RPM module</name>
+	<packaging>${rpm.packaging}</packaging>
+
+	<properties>
+		<com.ericsson.oss.rpm.architecture>noarch</com.ericsson.oss.rpm.architecture>
+		<!-- Install path = /${rpm-root}/${comp-name}/${install-path} -->
+		<rpm-root>opt</rpm-root>
+		<comp-name>ericsson</comp-name>
+		<install-path>${project.groupId}.FMService</install-path>
+        <publish_artifact>true</publish_artifact>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>${project.parent.artifactId}-ear</artifactId>
+			<version>${project.version}</version>
+			<type>ear</type>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<version>${version.jboss-as-maven-plugin}</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>name-hyperic-file-correctly</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<echo>Copying hyperic content into correct file name</echo>
+								<delete>
+									<fileset dir="src/main/resources">
+										<exclude name="FMService-ear.xml" />
+									</fileset>
+								</delete>
+								<copy file="src/main/resources/FMService-ear.xml" tofile="src/main/resources/${project.parent.artifactId}-ear-${project.version}.ear.xml" overwrite="true" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>rpm-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<skip>true</skip>
+					<inherited>true</inherited>
+					<copyright>2013 Ericsson AB All rights reserved</copyright>
+					<summary>${stripped.artifactId}</summary>
+					<packager>${ericsson.rstate}</packager>
+					<group>ERI-NMS</group>
+					<requires>
+						<require>python &gt;= 2.6</require>
+					</requires>
+					<vendor>Ericsson AB</vendor>
+					<url>www.ericsson.com</url>
+
+					<mappings>
+
+						<mapping>
+							<directory>/${rpm-root}/${comp-name}</directory>
+							<filemode>775</filemode>
+							<username>root</username>
+							<groupname>root</groupname>
+						</mapping>
+						<mapping>
+							<directory>/${rpm-root}/${comp-name}/${install-path}</directory>
+							<filemode>775</filemode>
+							<username>root</username>
+							<groupname>root</groupname>
+							<configuration>false</configuration>
+							<directoryIncluded>true</directoryIncluded>
+							<recurseDirectories>true</recurseDirectories>
+
+							<dependency>
+								<includes>
+									<include>com.ericsson.nms.services:FMService-ear</include>
+								</includes>
+							</dependency>
+							<sources>
+								<source>
+									<location>src/main/python</location>
+									<excludes>
+										<exclude>**/*.pyc</exclude>
+										<exclude>**/*.gitignore</exclude>
+									</excludes>
+								</source>
+								<source>
+									<location>src/main/resources/</location>
+									<excludes>
+										<exclude>**/*.pyc</exclude>
+										<exclude>**/version.txt</exclude>
+										<exclude>**/*.gitignore</exclude>
+										<exclude>**/ETF.xml</exclude>
+										<exclude>**/*.sql</exclude>
+									</excludes>
+								</source>
+								<source>
+									<location>src/main/scripts/</location>
+									<excludes>
+										<exclude>**/*.pyc</exclude>
+										<exclude>**/postinstall.sh</exclude>
+										<exclude>**/preremove.sh</exclude>
+										<exclude>**/postremove.sh</exclude>
+										<exclude>**/*.gitignore</exclude>
+									</excludes>
+								</source>
+							</sources>
+						</mapping>
+						<!-- changes required for RPM build :::Starts -->
+						<mapping>
+							<directory>/var/lib/ericmon/jboss</directory>
+							<filemode>775</filemode>
+							<username>root</username>
+							<groupname>root</groupname>
+							<sources>
+								<source>
+									<location>src/main/resources</location>
+									<includes>
+										<include>${project.parent.artifactId}-ear-${project.version}.ear.xml</include>
+									</includes>
+								</source>
+							</sources>
+						</mapping>
+						<!--:::Ended -->
+					</mappings>
+					<preinstallScriptlet>
+						<scriptFile>src/main/scripts/preinstall.sh</scriptFile>
+						<fileEncoding>utf-8</fileEncoding>
+					</preinstallScriptlet>
+					<postinstallScriptlet>
+						<scriptFile>src/main/scripts/postinstall.sh</scriptFile>
+						<fileEncoding>utf-8</fileEncoding>
+					</postinstallScriptlet>
+					<preremoveScriptlet>
+						<scriptFile>src/main/scripts/preremove.sh</scriptFile>
+						<fileEncoding>utf-8</fileEncoding>
+					</preremoveScriptlet>
+					<postremoveScriptlet>
+						<scriptFile>src/main/scripts/postremove.sh</scriptFile>
+						<fileEncoding>utf-8</fileEncoding>
+					</postremoveScriptlet>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>

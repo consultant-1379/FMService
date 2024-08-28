@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ericsson.nms</groupId>
+		<artifactId>integration</artifactId>
+		<version>15.2.0.20</version>
+	</parent>
+	<groupId>com.ericsson.nms.services</groupId>
+	<artifactId>FMService</artifactId>
+	<version>1.10.53-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<url>http://www.ericsson.com</url>
+	<organization>
+		<name>Ericsson</name>
+	</organization>
+
+	<prerequisites>
+		<maven>3.0.3</maven>
+	</prerequisites>
+
+	<name>[${project.artifactId}] JEE6 Project</name>
+
+	<properties>
+
+	<version.weld>1.1.8.Final</version.weld>
+		<version.ejb>3.1</version.ejb>
+		<version.jee>6</version.jee>
+		<version.junit>4.10</version.junit>
+		<version.arq.jboss.as>7.1.1.Final</version.arq.jboss.as>
+		<version.jboss.as>7.1.2.Final-redhat-1</version.jboss.as>
+		<!-- <version.jboss.as>7.1.2.Final-redhat-1</version.jboss.as> -->
+		<!-- Do not use JBoss community version use EAP 6. As JBoss version 7.1.1.Final 
+			is being used by maven plugin(version.jboss-as-maven-plugin) -->
+		<version.jboss.as.arquillian>7.1.1.Final</version.jboss.as.arquillian>
+
+
+		<version.arquillian-junit-container>1.0.0.Final</version.arquillian-junit-container>
+		<version.arquillian.bom>1.0.3.Final</version.arquillian.bom>
+		<version.arquillian-weld-se-embedded>1.0.0.CR3</version.arquillian-weld-se-embedded>
+		<version.jboss-as-maven-plugin>${version.jboss.as}</version.jboss-as-maven-plugin>
+		<version.easymock>3.1</version.easymock>
+		<!-- When you want to switch to new Service Framework version only change 
+			value below -->
+		<version.service.framework>1.10.8.4</version.service.framework>
+		<project.ear.defaultLibBundleDir>lib</project.ear.defaultLibBundleDir>
+		<!-- JBoss modules your service will automatically add to classpath -->
+		<project.ear.Dependencies>org.slf4j, org.jboss.as.web</project.ear.Dependencies>
+
+		<!-- <version.modelling-support>1.0.17-SNAPSHOT</version.modelling-support> -->
+		<version.mediationsdk>1.8.8</version.mediationsdk>
+		<!-- <version.modelling-support>1.0.17-SNAPSHOT</version.modelling-support> -->
+		<version.data.persistence>1.18.11</version.data.persistence>
+		<version.med.core>3.0.1-SNAPSHOT</version.med.core>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- here we specify what version of Service Framework we want to use. 
+				All modules will be imported -->
+			<dependency>
+				<groupId>com.ericsson.oss.itpf.sdk</groupId>
+				<artifactId>ServiceFrameworkBOM</artifactId>
+				<version>${version.service.framework}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>${version.arquillian.bom}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- <dependency> <groupId>com.ericsson.nms.services</groupId> <artifactId>FMModel</artifactId> 
+				<scope>provided</scope> <version>1.0.1</version> </dependency> -->
+			<!-- Modedlling-support -->
+			<!-- <dependency> <groupId>com.ericsson.oss.itpf.datalayer</groupId> <artifactId>modelling-support-maven-plugin</artifactId> 
+				<version>1.0.20</version> </dependency> -->
+
+			<!-- <dependency> <groupId>com.ericsson.oss.itpf.datalayer</groupId> <version>${version.metamodels}</version> 
+				<artifactId>metamodels-jaxb-gen</artifactId> </dependency> -->
+			<!-- End here -->
+
+
+			<dependency>
+				<groupId>com.ericsson.nms.mediation</groupId>
+				<artifactId>core-mediation-models-api</artifactId>
+				<version>${version.mediationsdk}</version>
+			</dependency>
+
+			<!-- Added for data persistence -->
+			<dependency>
+				<groupId>com.ericsson.nms.mediation</groupId>
+				<artifactId>mediation-core-bom</artifactId>
+				 <version>3.0.1-SNAPSHOT</version>
+				<!-- <version>${version.med.core}</version>  -->
+				<type>pom</type>
+				<!-- <scope>import</scope> -->
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.ericsson.oss.itpf.sdk</groupId>
+				<artifactId>sdk-core-api</artifactId>
+				<version>1.0.5</version>
+			</dependency>
+          <!-- fm model for sdk 1.9.1 -->
+			<dependency>
+				<groupId>com.ericsson.nms.mediation.models</groupId>
+				<artifactId>fm-mediation-model</artifactId>
+				<version>1.1.31</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[2.4,)</versionRange>
+										<goals>
+											<goal>analyze-dep-mgt</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-ear-plugin</artifactId>
+										<configuration>
+											<artifactTypeMappings>
+												<artifactTypeMapping type="java-source" mapping="jar" />
+											</artifactTypeMappings>
+										</configuration>
+
+										<versionRange>[2.7,)</versionRange>
+										<goals>
+											<goal>generate-application-xml</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.ericsson.maven.plugins</groupId>
+										<artifactId>rstate-maven-plugin</artifactId>
+										<versionRange>[1.0,)</versionRange>
+										<goals>
+											<goal>rstate</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<version>${version.jboss-as-maven-plugin}</version>
+				<configuration>
+					<filename>${project.parent.artifactId}.${project.packaging}</filename>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<configuration>
+					<formats>
+						<format>html</format>
+						<format>xml</format>
+					</formats>
+					<instrumentation>
+
+					</instrumentation>
+				</configuration>
+				<executions>
+					<execution>
+						<phase />
+						<!-- <phase>package</phase> -->
+						<goals>
+							<goal>cobertura</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>javax.validation</groupId>
+						<artifactId>validation-api</artifactId>
+						<version>1.0.0.GA</version>
+					</dependency>
+					<!-- in case your modeled POJOs depend on additional libraries you will 
+						have to add those as dependencies here -->
+					<dependency>
+						<groupId>com.ericsson.nms.mediation</groupId>
+						<artifactId>core-mediation-models-api</artifactId>
+						<version>${version.mediationsdk}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>cobertura-maven-plugin</artifactId> 
+				<configuration> <formats> <format>xml</format> <format>html</format> </formats> 
+				</configuration> <executions> <execution> <phase>package</phase> <goals> 
+				<goal>cobertura</goal> </goals> </execution> </executions> </plugin> -->
+		</plugins>
+	</build>
+	<!-- Added For Cobertura Reporting -->
+	<!-- reporting> <plugins> <plugin> <groupId>org.codehaus.mojo</groupId> 
+		<artifactId>cobertura-maven-plugin</artifactId> <version>2.5</version> </plugin> 
+		</plugins> </reporting> -->
+	<dependencies>
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>${version.easymock}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ericsson.nms.mediation</groupId>
+			<artifactId>core-mediation-models-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Added for Data Persistence -->
+		<dependency>
+			<groupId>com.ericsson.oss.itpf.datalayer</groupId>
+			<artifactId>DataPersistence-api</artifactId>
+			<version>${version.data.persistence}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ericsson.oss.itpf.datalayer</groupId>
+			<artifactId>DataPersistence-jar</artifactId>
+			<version>${version.data.persistence}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ericsson.oss.itpf.sdk</groupId>
+			<artifactId>sdk-core-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ericsson.oss.itpf.sdk</groupId>
+			<artifactId>sdk-upgrade-api</artifactId>
+		</dependency>
+
+
+	</dependencies>
+	<modules>
+		<module>FMService-api</module>
+		<!-- <module>FMService-jar</module> -->
+		<module>FMService-jee</module>
+		<module>FMService-impl</module>
+		<!-- <module>FMService-war</module> -->
+		<module>FMService-ear</module>
+		<module>ERICFMService_CXP9030213</module>
+		<module>testsuite</module>
+	</modules>
+
+	<scm>
+		<tag>FMService-1.8.3-SNAPSHOT</tag>
+	</scm>
+</project>

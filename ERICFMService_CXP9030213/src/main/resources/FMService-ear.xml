@@ -1,0 +1,22 @@
+<ericmon>
+    <service name="JMS Queue FMMediation Channel for FM Alarm Monotoring">
+      <plugin type="autoinventory"/>
+      <plugin class="org.hyperic.hq.product.MeasurementPlugin" type="measurement"/>
+      <plugin class="com.ericsson.monitoring.jboss.CustomJBossPluginCollector" type="collector"/>
+      <metric indicator="true" interval="60000" name="Availability" template="sigar:Type=ProcState,Arg=%process.query%:State"/>
+      <metric alias="CurrentAlarmsInQueue" indicator="true" interval="60000" name="CurrentAlarmsInQueue" template='org.hornetq:module=Core,type=Queue,address="jms.topic.FMMediationChannel",name="jms.topic.FMMediationChannel":MessageCount'/>
+      <metric alias="ScheduledCount" indicator="true" interval="60000" name="ScheduledCount" template='org.hornetq:module=Core,type=Queue,address="jms.topic.FMMediationChannel",name="jms.topic.FMMediationChannel":ScheduledCount'/>
+      <metric alias="NumberOfSubscribersForAlarms" indicator="true" interval="60000" name="NumberOfSubscribersForAlarm" template='org.hornetq:module=Core,type=Queue,address="jms.topic.FMMediationChannel",name="jms.topic.FMMediationChannel":ConsumerCount'/>
+      <metric alias="ProcessingAlarmCount" indicator="true" interval="60000" name="ProcessingAlarmCount" template='org.hornetq:module=Core,type=Queue,address="jms.topic.FMMediationChannel",name="jms.topic.FMMediationChannel":DeliveringCount'/>
+      <metric alias="ProcessedAlarmCount" indicator="true" interval="60000" name="ProcessedAlarmCount" template='org.hornetq:module=Core,type=Queue,address="jms.topic.FMMediationChannel",name="jms.topic.FMMediationChannel":MessagesAdded'/>
+    </service>
+     <service name="FMService Alarms and OSS Connection Monitoring">
+      <plugin type="autoinventory"/>
+      <plugin class="org.hyperic.hq.product.MeasurementPlugin" type="measurement"/>
+      <plugin class="com.ericsson.monitoring.jboss.CustomJBossPluginCollector" type="collector"/>
+      <metric indicator="true" interval="60000" name="Availability" template="sigar:Type=ProcState,Arg=%process.query%:State"/>
+      <metric alias="alarmCount" indicator="true" interval="60000" name="alarmCount" template="com.ericsson.oss.fmservice.ejb.eventbus.listener.FMService:type=FMInstrumentedBean:alarmCount"/>
+      <metric alias="connectionStatus" indicator="true" interval="60000" name="OSS ConnectionStatus (connection OK=0)" template="com.ericsson.oss.fmservice.ejb.eventbus.listener.FMService:type=FMInstrumentedBean:connectionStatus"/>
+	  <metric alias="failedAlarmCount" indicator="true" interval="60000" name="failedAlarmCount (Expected Value=0)" template="com.ericsson.oss.fmservice.ejb.eventbus.listener.FMService:type=FMInstrumentedBean:failedAlarmCount"/>
+    </service>
+</ericmon>
